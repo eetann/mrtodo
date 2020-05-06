@@ -24,6 +24,7 @@ class Task {
     this.start = '';
     this.end = '';
   }
+
   /* タスク内容をslackへ投稿 */
   postTask() {
     var msg = {
@@ -69,5 +70,18 @@ class Task {
       });
     }
     postSlack(msg);
+  }
+
+  /* slackに自作リマインダーを送信予約 */
+  addReminder() {
+    if (this.remind != '') {
+      var res = JSON.parse(scheduleMessage('#001-todo', this.remind, this.name));
+      if (res.ok) {
+        this.id = res.scheduled_message_id;
+      } else {
+        msgPost('みすった。');
+        msgPost(JSON.stringify(res));
+      }
+    }
   }
 }

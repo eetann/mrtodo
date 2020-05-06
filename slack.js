@@ -206,3 +206,21 @@ function msgPost(text) {
     ]
   });
 }
+
+/**
+ * Slackに送信予約
+ * @param {str} channelName チャンネルの名前
+ * @param {int} time 秒
+ * @param {str} text
+ * @return {JSON} レスポンス
+ */
+function scheduleMessage(channelName, time, text) {
+  // NOTE: channel にアプリを追加してあげること
+  // TODO: ここのtextをblocksにする
+  return callSlackAPI('chat.scheduleMessage', {
+    'channel': channelName,
+    'post_at': convertDate2Epoc(time),
+    'text': text
+  });
+}
+

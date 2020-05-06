@@ -7,46 +7,9 @@ function addTask(values) {
   // slackに送信
   task.postTask();
   // スプレッドシートに登録
-  if (task.remind != '') {
-    var isAdded = addReminder(task);
-    if (!isAdded) {
-      msgPost('みすった。\n' + task.id);
-      return;
-    }
-  }
+  task.addReminder();
   var sheet = getSheetByName('tasks');
   registerTask(sheet, task);
-}
-
-/**
- * Date からUNIXタイムスタンプを計算
- * @param {Date} date
- * @return {int} UNIXタイムスタンプ
- */
-function convertDate2Epoc(date) {
-  return Math.floor(date.getTime() / 1000);
-}
-
-/**
- * Slackに送信予約
- * @param {dict} task
- * @return {str} id 取り消す時に必要なid
- */
-function addReminder(task) {
-  // NOTE: channel にアプリを追加してあげること
-  // TODO: ここのtextをボタンにする
-  var options = {
-    'channel': '#001-todo',
-    'post_at': convertDate2Epoc(task.remind),
-    'text': task.name
-  }
-  var res = JSON.parse(callSlackAPI('chat.scheduleMessage', options));
-  if (res.ok) {
-    task.id = res.scheduled_message_id;
-    return true;
-  }
-  task.id = JSON.stringify(res);
-  return false;
 }
 
 /**
@@ -64,54 +27,3 @@ function registerTask(sheet, task) {
   sheet.getRange(newRow, 7).setValue(task['remind']);
   // TODO: 次の通知(開始日によっては無し)
 }
-
-/**
- * タスク表示ブロックの生成
- */
-function msg4AddedTask(task) {
-  // TODO: task内容によって表示を分岐
-  var msg = {
-    "blocks": [
-      {
-        "type": "section",
-        "text": {
-          "type": "plain_text",
-          "text": task.name
-        }
-      },
-      {
-        "type": "section",
-        "fields": [
-        ]
-      }
-    ]
-  }
-  if (task.start != '') {
-    // NOTE: メッセージにpushするときはリストに注意
-    msg.blocks[1].fields.push({
-      "type": "plain_text",
-      "text": "開始日:\n" + task.start
-    });
-  }
-  if (task.end != '') {
-    // NOTE: メッセージにpushするときはリストに注意
-    msg.blocks[1].fields.push({
-      "type": "plain_text",
-      "text": "終了期限:\n" + task.end
-    });
-  }
-  if (task.remind != '') {
-    // NOTE: メッセージにpushするときはリストに注意
-    msg.blocks[1].fields.push({
-      "type": "plain_text",
-      "text": "リマインド:\n" + getyyyyMMddDOWHHmm(task.remind)
-    });
-  } else {
-    msg.blocks[1].fields.push({
-      "type": "plain_text",
-      "text": "リマインド:\nなし"
-    });
-  }
-  return msg;
-}
-
