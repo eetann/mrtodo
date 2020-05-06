@@ -84,4 +84,19 @@ class Task {
       }
     }
   }
+
+  /* タスクをシートへ登録 */
+  registerTask() {
+    var sheet = getSheetByName('tasks');
+    var newRow = sheet.getLastRow() + 1;
+    // 無駄な処理は控える
+    sheet.getRange(newRow, 1).setValue(this.id);
+    sheet.getRange(newRow, 2).setValue(this.name);
+    sheet.getRange(newRow, 3).setValue(false);
+    sheet.getRange(newRow, 4).setValue(this.start);
+    sheet.getRange(newRow, 5).setValue(this.end);
+    sheet.getRange(newRow, 6).setValue(0);
+    sheet.getRange(newRow, 7).setValue(this.remind);
+    // TODO: 次の通知(開始日によっては無し)
+  }
 }
