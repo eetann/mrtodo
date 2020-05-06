@@ -1,34 +1,9 @@
 /**
- * 送信データからタスクを生成
- * @param {dict} values 送信データ
- * @return {dict} タスクデータ
- */
-function generateTask(values) {
-  // NOTE: 変数のスコープに注意
-  var remind;
-  if (values.days) {
-    remind = new Date(values.days.day.selected_date.replace(/-/g, '/') + ' '
-      + values.hours.hour.selected_option.value + ':'
-      + values.minutes.minute.selected_option.value + ':00');
-  } else {
-    // var remind = new Date();
-    // remind.setSeconds(remind.getSeconds() + 15);
-    remind = '';
-  }
-  return {
-    'name': values.name.name.value,
-    'start': '',
-    'end': '',
-    'remind': remind
-  };
-}
-
-/**
  * タスクを追加
  * @return {dict} msg slackのブロック
  */
 function addTask(values) {
-  var task = generateTask(values);
+  var task = new Task(values);
   // slackに送信
   postSlack(msg4AddedTask(task));
   // スプレッドシートに登録
