@@ -5,7 +5,7 @@
 function addTask(values) {
   var task = new Task(values);
   // slackに送信
-  postSlack(msg4AddedTask(task));
+  task.postTask();
   // スプレッドシートに登録
   if (task.remind != '') {
     var isAdded = addReminder(task);
