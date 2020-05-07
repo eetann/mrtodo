@@ -10,17 +10,24 @@ Slack App としてSlackから入力を受け付けたり、通知をします�
 ![タスクの追加](./image/add_task.gif)  
 
 ## Features
-<!-- - Awesome function -->  
+- Slackからタスクを管理できます
+    - タスクの追加  
+    - タスクのリマインド  
+- タスクはスプレッドシートで管理されます
 
 <!-- For more information, see `awesome-tool help`. -->  
 
-## Requirement
+<!-- ## Requirement -->  
 <!-- - Requirement -->  
 
 ## Usage
-<!-- 1. Usage -->  
+###
+タスクの追加  
+ショートカットから todo add を実行することでタスクする画面が表示されます。  
+![タスクの追加](./image/add_task.gif)  
+リマインダーを追加することができます  
 
-## Installation
+<!-- ## Installation -->  
 <!-- ```sh                                              -->  
 <!-- $ git clone https://github.com/eetann/awesome-tool -->  
 <!-- ```                                                -->  
