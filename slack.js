@@ -108,7 +108,6 @@ function timepicker() {
  *     https://api.slack.com/tools/block-kit-builder で作ると良い
  */
 function postSlack(blocks) {
-  // TODO: ここを chat.postMessage などに置き換える
   // NOTE: スクリプトのプロパティはdebugではなくmainのみでOK
   return callSlackAPI('chat.postMessage', {
     'channel': getScriptProperty('channelName'),
@@ -193,17 +192,16 @@ function getyyyyMMddDOWHHmm(date) {
  * @param {str} text 送信したい文字列
  */
 function msgPost(text) {
-  return postSlack({
-    'blocks': [
-      {
-        'type': 'section',
-        'text': {
-          'type': 'mrkdwn',
-          'text': text
-        }
-      },
-    ]
-  });
+  return postSlack([
+    {
+      'type': 'section',
+      'text': {
+        'type': 'mrkdwn',
+        'text': text
+      }
+    },
+  ]
+  );
 }
 
 /**
