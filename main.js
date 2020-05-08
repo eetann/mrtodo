@@ -29,7 +29,7 @@ function doPost(e) {
     var json_data = {
       text: e.message
     };
-    // postSlack([{"type": "section","text": {"type": "mrkdwn",
+    // postSlack(' ', [{"type": "section","text": {"type": "mrkdwn",
     //         "text": JSON.stringify(payload)}},]);
     return ContentService.createTextOutput(JSON.stringify(json_data))
       .setMimeType(ContentService.MimeType.JSON);

@@ -3,7 +3,6 @@
  */
 function timepicker() {
   // NOTE: options のvalue は文字列(数値だとだめ)
-  // TODO: initial_option を工夫する(デフォルト設定や現在時刻など)
   var hours = {
     "type": "static_select",
     "action_id": "hour",
@@ -104,14 +103,15 @@ function timepicker() {
 
 /**
  * slackにメッセージを送る関数
+ * @param {str} text 送信したい文字列 通知に表示される
  * @param {dict} blocks jsonに対応する連想配列
  *     https://api.slack.com/tools/block-kit-builder で作ると良い
  */
-function postSlack(blocks) {
+function postSlack(text, blocks) {
   // NOTE: スクリプトのプロパティはdebugではなくmainのみでOK
   return callSlackAPI('chat.postMessage', {
     'channel': getScriptProperty('channelName'),
-    'text': 'momo',
+    'text': text,
     'blocks': blocks
   });
 }
@@ -192,7 +192,7 @@ function getyyyyMMddDOWHHmm(date) {
  * @param {str} text 送信したい文字列
  */
 function msgPost(text) {
-  return postSlack([
+  return postSlack(' ', [
     {
       'type': 'section',
       'text': {
