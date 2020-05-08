@@ -17,8 +17,6 @@ class Task {
         values.hours.hour.selected_option.value,
         values.minutes.minute.selected_option.value);
     } else {
-      // this.remind = new Date();
-      // this.remind.setSeconds(remind.getSeconds() + 15);
       this.remind = '';
     }
     this.start = '';
@@ -68,7 +66,7 @@ class Task {
         "text": "リマインド:\nなし"
       });
     }
-    postSlack(blocks);
+    postSlack('task ' + this.name, blocks);
   }
 
   /* slackに自作リマインダーを送信予約 */
