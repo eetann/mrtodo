@@ -104,18 +104,17 @@ function timepicker() {
 
 /**
  * slackにメッセージを送る関数
- * @param {dict} msg jsonに対応する連想配列
+ * @param {dict} blocks jsonに対応する連想配列
  *     https://api.slack.com/tools/block-kit-builder で作ると良い
  */
-function postSlack(msg) {
+function postSlack(blocks) {
   // TODO: ここを chat.postMessage などに置き換える
   // NOTE: スクリプトのプロパティはdebugではなくmainのみでOK
-  var options = {
-    "method": "post",
-    "contentType": "application/json",
-    "payload": JSON.stringify(msg)
-  };
-  return UrlFetchApp.fetch(getScriptProperty('URL'), options);
+  return callSlackAPI('chat.postMessage', {
+    'channel': getScriptProperty('channelName'),
+    'text': 'momo',
+    'blocks': blocks
+  });
 }
 
 /**
@@ -125,11 +124,11 @@ function postSlack(msg) {
  * @param {dict} viewDict
  */
 function openView(trigger_id, viewDict) {
-  var options = {
+  var payload = {
     'trigger_id': trigger_id,
     'view': viewDict
   }
-  return callSlackAPI('views.open', options);
+  return callSlackAPI('views.open', payload);
 }
 
 /**
@@ -138,19 +137,19 @@ function openView(trigger_id, viewDict) {
  * @param {dict} viewDict
  */
 function updateView(view_id, viewDict) {
-  var options = {
+  var payload = {
     'view_id': view_id,
     'view': viewDict
   }
-  return callSlackAPI('views.update', options);
+  return callSlackAPI('views.update', payload);
 }
 
 /**
  * slackのAPIを呼ぶ
  * @param {str} api apiのurl chat.scheduleMessage とか
- * @param {dict} msg jsonに対応する連想配列
+ * @param {dict} blocks jsonに対応する連想配列
  */
-function callSlackAPI(api, msg) {
+function callSlackAPI(api, payload) {
   var options = {
     "method": "post",
     'headers': {
@@ -158,7 +157,7 @@ function callSlackAPI(api, msg) {
         "Bearer " + getScriptProperty('TOKEN')
     },
     "contentType": "application/json",
-    "payload": JSON.stringify(msg)
+    "payload": JSON.stringify(payload)
   };
   return UrlFetchApp.fetch("https://slack.com/api/" + api, options);
 }
@@ -217,7 +216,7 @@ function scheduleMessage(time, text) {
   // NOTE: channel にアプリを追加してあげること
   // TODO: ここのtextをblocksにする
   return callSlackAPI('chat.scheduleMessage', {
-    'channel': getScriptProperty('channnelName'),
+    'channel': getScriptProperty('channelName'),
     'post_at': convertDate2Epoc(time),
     'text': text
   });
