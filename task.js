@@ -27,55 +27,54 @@ class Task {
 
   /* タスク内容をslackへ投稿 */
   postTask() {
-    var msg = {
-      "blocks": [
-        {
-          "type": "section",
-          "text": {
-            "type": "plain_text",
-            "text": this.name
-          }
-        },
-        {
-          "type": "section",
-          "fields": [
-          ]
+    var blocks = [
+      {
+        "type": "section",
+        "text": {
+          "type": "plain_text",
+          "text": this.name
         }
-      ]
-    }
+      },
+      {
+        "type": "section",
+        "fields": [
+        ]
+      }
+    ]
+
     if (this.start != '') {
       // NOTE: メッセージにpushするときはリストに注意
-      msg.blocks[1].fields.push({
+      blocks[1].fields.push({
         "type": "plain_text",
         "text": "開始日:\n" + this.start
       });
     }
     if (this.end != '') {
       // NOTE: メッセージにpushするときはリストに注意
-      msg.blocks[1].fields.push({
+      blocks[1].fields.push({
         "type": "plain_text",
         "text": "終了期限:\n" + this.end
       });
     }
     if (this.remind != '') {
       // NOTE: メッセージにpushするときはリストに注意
-      msg.blocks[1].fields.push({
+      blocks[1].fields.push({
         "type": "plain_text",
         "text": "リマインド:\n" + getyyyyMMddDOWHHmm(this.remind)
       });
     } else {
-      msg.blocks[1].fields.push({
+      blocks[1].fields.push({
         "type": "plain_text",
         "text": "リマインド:\nなし"
       });
     }
-    postSlack(msg);
+    postSlack(blocks);
   }
 
   /* slackに自作リマインダーを送信予約 */
   addReminder() {
     if (this.remind != '') {
-      var res = JSON.parse(scheduleMessage('#001-todo', this.remind, this.name));
+      var res = JSON.parse(scheduleMessage(this.remind, this.name));
       if (res.ok) {
         this.id = res.scheduled_message_id;
       } else {
