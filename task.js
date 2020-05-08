@@ -75,7 +75,7 @@ class Task {
   /* slackに自作リマインダーを送信予約 */
   addReminder() {
     if (this.remind != '') {
-      var res = JSON.parse(scheduleMessage('#001-todo', this.remind, this.name));
+      var res = JSON.parse(scheduleMessage(this.remind, this.name));
       if (res.ok) {
         this.id = res.scheduled_message_id;
       } else {
