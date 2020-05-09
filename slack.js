@@ -131,6 +131,20 @@ function openView(trigger_id, viewDict) {
 }
 
 /**
+ * slackにHomeを表示させる
+ * NOTE: Interactivity をオンにして Request URL を設定すること
+ * @param {str} user_id
+ * @param {dict} viewDict
+ */
+function publishView(user_id, viewDict) {
+  var payload = {
+    'user_id': user_id,
+    'view': viewDict
+  }
+  return callSlackAPI('views.publish', payload);
+}
+
+/**
  * slackのモーダルを更新
  * @param {str} view_id
  * @param {dict} viewDict

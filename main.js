@@ -25,16 +25,44 @@ function doPost(e) {
         updateView4DeleteTaskRemind(payload.container.view_id);
       }
     }
+    return ContentService.createTextOutput();
   } catch (e) {
-    var json_data = {
-      text: e.message
-    };
+    // var json_data = {
+    //   text: e.message
+    // };
     // postSlack(' ', [{"type": "section","text": {"type": "mrkdwn",
     //         "text": JSON.stringify(payload)}},]);
-    return ContentService.createTextOutput(JSON.stringify(json_data))
-      .setMimeType(ContentService.MimeType.JSON);
+    // return ContentService.createTextOutput(JSON.stringify(json_data))
+    //   .setMimeType(ContentService.MimeType.JSON);
   }
-  return ContentService.createTextOutput();
+  // return ContentService.createTextOutput();
+  try {
+    var contents = JSON.parse(e.postData.contents);
+    if (e.parameter.type == 'event') {
+      if (contents.type == "url_verification") {
+        var challenge = contents.challenge;
+        return ContentService.createTextOutput(challenge);
+      } else if (contents.type == 'event_callback') {
+        if (contents.event.type == 'app_home_opened') {
+          publishView(contents.event.user, {
+            "type": "home",
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "A simple stack of blocks for the simple sample Block Kit Home tab."
+                }
+              }
+            ]
+          });
+        }
+      }
+    }
+    return ContentService.createTextOutput();
+  } catch (e) {
+    /* handle error */
+  }
 }
 
 /**
