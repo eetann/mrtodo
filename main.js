@@ -31,22 +31,10 @@ function doPost(e) {
       // Event Subscriptions
       var contents = JSON.parse(e.postData.contents);
       if (contents.type == "url_verification") {
-        var challenge = contents.challenge;
-        return ContentService.createTextOutput(challenge);
+        return ContentService.createTextOutput(contents.challenge);
       } else if (contents.type == 'event_callback') {
         if (contents.event.type == 'app_home_opened') {
-          publishView(contents.event.user, {
-            "type": "home",
-            "blocks": [
-              {
-                "type": "section",
-                "text": {
-                  "type": "mrkdwn",
-                  "text": ':smile:momomo'
-                }
-              }
-            ]
-          });
+          publishView4HomeInit(contents.event.user);
         }
       }
     }

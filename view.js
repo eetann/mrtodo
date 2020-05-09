@@ -109,3 +109,193 @@ function updateView4DeleteTaskRemind(view_id) {
   // TODO: 先のビューによって分岐させる
   updateView(view_id, generateView4AddTaskInit());
 }
+
+/**
+ * Homeビュー
+ */
+function generateView4Home() {
+  var view = {
+    "type": "home",
+    "blocks": [
+      {
+        "type": "actions",
+        "elements": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "New Task",
+              "emoji": true
+            },
+            "style": "primary",
+            "value": "create_task"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Help",
+              "emoji": true
+            },
+            "value": "help"
+          }
+        ]
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "*Today*"
+        }
+      },
+      {
+        "type": "actions",
+        "elements": [
+          {
+            "type": "checkboxes",
+            "initial_options": [
+              {
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "~*Get into the garden :house_with_garden:*~"
+                },
+                "value": "option 1"
+              }
+            ],
+            "options": [
+              {
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "~*Get into the garden :house_with_garden:*~"
+                },
+                "value": "option 1"
+              },
+              {
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*Get the groundskeeper wet :sweat_drops:*"
+                },
+                "value": "option 2"
+              },
+              {
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*Steal the groundskeeper's keys :old_key:*"
+                },
+                "value": "option 3"
+              },
+              {
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*Make the groundskeeper wear his sun hat :male-farmer:*"
+                },
+                "value": "option 4"
+              },
+              {
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*Rake in the lake :	<<<<<<<<ocean:*"
+                },
+                "value": "option 5"
+              },
+              {
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*Have a picnic :knife_fork_plate:*"
+                },
+                "value": "option 6",
+                "description": {
+                  "type": "mrkdwn",
+                  "text": "リマインド時間 x日～x日x時"
+                }
+              }
+            ]
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Edit",
+              "emoji": true
+            },
+            "style": "primary"
+          }
+        ]
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "タスク一覧"
+        }
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "1 ~ 10 / 200 を表示"
+        },
+        "accessory": {
+          "type": "overflow",
+          "options": [
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Option 1",
+                "emoji": true
+              },
+              "value": "value-0"
+            },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Option 2",
+                "emoji": true
+              },
+              "value": "value-1"
+            },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Option 3",
+                "emoji": true
+              },
+              "value": "value-2"
+            },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Option 4",
+                "emoji": true
+              },
+              "value": "value-3"
+            }
+          ]
+        }
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "plain_text",
+          "text": "ここにタスクの表示",
+          "emoji": true
+        }
+      }
+    ]
+  }
+  return view;
+}
+
+/**
+ * Homeの初期ビューを送信
+ */
+function publishView4HomeInit(user_id) {
+  var view = generateView4Home();
+  publishView(user_id, view);
+}
