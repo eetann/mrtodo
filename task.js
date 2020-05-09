@@ -23,8 +23,8 @@ class Task {
     this.end = '';
   }
 
-  /* タスク内容をslackへ投稿 */
-  postTask() {
+  /* タスクを表示するためのブロックを返す */
+  blocks4ShowTask() {
     var blocks = [
       {
         "type": "section",
@@ -101,7 +101,12 @@ class Task {
         "text": "リマインドなし"
       });
     }
-    postSlack('task ' + this.name, blocks);
+    return blocks;
+  }
+
+  /* タスク内容をslackへ投稿 */
+  postTask() {
+    postSlack('task ' + this.name, this.blocks4ShowTask());
   }
 
   /* slackに自作リマインダーを送信予約 */
