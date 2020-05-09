@@ -70,7 +70,7 @@ class Task {
 }
 
 /**
- * スプレッドシートからタスクを読み取る
+ * スプレッドシートからタスク詳細一覧を生成
  */
 function generateTaskListBySheet() {
   var sheet = getSheetByName('tasks');
