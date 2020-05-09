@@ -29,13 +29,48 @@ class Task {
       {
         "type": "section",
         "text": {
-          "type": "plain_text",
-          "text": this.name
+          "type": "mrkdwn",
+          "text": '>*' + this.name + '*'
+        },
+        "accessory": {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "完了",
+            "emoji": true
+          },
+          "style": "primary",
+          "value": "click_me_123"
         }
       },
       {
         "type": "section",
         "fields": [
+        ]
+      },
+      {
+        "type": "actions",
+        "elements": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "emoji": true,
+              "text": "削除"
+            },
+            "style": "danger",
+            "value": "click_me_123"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "emoji": true,
+              "text": "編集"
+            },
+            "style": "primary",
+            "value": "click_me_123"
+          }
         ]
       }
     ]
@@ -43,27 +78,27 @@ class Task {
     if (this.start != '') {
       // NOTE: メッセージにpushするときはリストに注意
       blocks[1].fields.push({
-        "type": "plain_text",
-        "text": "開始日:\n" + this.start
+        "type": "mrkdwn",
+        "text": "*開始日*:\n" + this.start
       });
     }
     if (this.end != '') {
       // NOTE: メッセージにpushするときはリストに注意
       blocks[1].fields.push({
-        "type": "plain_text",
-        "text": "終了期限:\n" + this.end
+        "type": "mrkdwn",
+        "text": "*終了期限*:\n" + this.end
       });
     }
     if (this.remind != '') {
       // NOTE: メッセージにpushするときはリストに注意
       blocks[1].fields.push({
-        "type": "plain_text",
-        "text": "リマインド:\n" + getyyyyMMddDOWHHmm(this.remind)
+        "type": "mrkdwn",
+        "text": "*リマインド*:\n" + getyyyyMMddDOWHHmm(this.remind)
       });
     } else {
       blocks[1].fields.push({
         "type": "plain_text",
-        "text": "リマインド:\nなし"
+        "text": "リマインドなし"
       });
     }
     postSlack('task ' + this.name, blocks);
