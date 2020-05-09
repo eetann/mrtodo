@@ -7,38 +7,29 @@ function doPost(e) {
   // NOTE: callback_id や trigger_id が e の中のどこに含まれているか注意
   // NOTE: textには文字数の制限がある msgPost(JSON.stringify(payload.view));
   try {
-    var payload = JSON.parse(e.parameter.payload);
-    if (payload.type == 'view_submission') {
-      var values = payload.view.state.values;
-      if (payload.view.callback_id == 'add_task_submit') {
-        addTask(values);
+    if (e.parameter.type == 'interactoin') {
+      // Interactivity & Shortcuts
+      var payload = JSON.parse(e.parameter.payload);
+      if (payload.type == 'view_submission') {
+        var values = payload.view.state.values;
+        if (payload.view.callback_id == 'add_task_submit') {
+          addTask(values);
+        }
+      } else if (payload.type == 'shortcut') {
+        if (payload.callback_id == 'add_task_call') {
+          openView4AddTaskInit(payload.trigger_id);
+        }
+      } else if (payload.type == 'block_actions') {
+        if (payload.actions[0].action_id == 'add_remind') {
+          updateView4AddTaskRemind(payload.container.view_id);
+        } else if (payload.actions[0].action_id == 'delete_remind') {
+          // TODO: ここから view を再利用
+          updateView4DeleteTaskRemind(payload.container.view_id);
+        }
       }
-    } else if (payload.type == 'shortcut') {
-      if (payload.callback_id == 'add_task_call') {
-        openView4AddTaskInit(payload.trigger_id);
-      }
-    } else if (payload.type == 'block_actions') {
-      if (payload.actions[0].action_id == 'add_remind') {
-        updateView4AddTaskRemind(payload.container.view_id);
-      } else if (payload.actions[0].action_id == 'delete_remind') {
-        // TODO: ここから view を再利用
-        updateView4DeleteTaskRemind(payload.container.view_id);
-      }
-    }
-    return ContentService.createTextOutput();
-  } catch (e) {
-    // var json_data = {
-    //   text: e.message
-    // };
-    // postSlack(' ', [{"type": "section","text": {"type": "mrkdwn",
-    //         "text": JSON.stringify(payload)}},]);
-    // return ContentService.createTextOutput(JSON.stringify(json_data))
-    //   .setMimeType(ContentService.MimeType.JSON);
-  }
-  // return ContentService.createTextOutput();
-  try {
-    var contents = JSON.parse(e.postData.contents);
-    if (e.parameter.type == 'event') {
+    } else if (e.parameter.type == 'event') {
+      // Event Subscriptions
+      var contents = JSON.parse(e.postData.contents);
       if (contents.type == "url_verification") {
         var challenge = contents.challenge;
         return ContentService.createTextOutput(challenge);
@@ -51,7 +42,7 @@ function doPost(e) {
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "A simple stack of blocks for the simple sample Block Kit Home tab."
+                  "text": ':smile:momomo'
                 }
               }
             ]
@@ -59,10 +50,16 @@ function doPost(e) {
         }
       }
     }
-    return ContentService.createTextOutput();
   } catch (e) {
-    /* handle error */
+    var json_data = {
+      text: e.message
+    };
+    // postSlack(' ', [{"type": "section","text": {"type": "mrkdwn",
+    //         "text": JSON.stringify(payload)}},]);
+    return ContentService.createTextOutput(JSON.stringify(json_data))
+      .setMimeType(ContentService.MimeType.JSON);
   }
+  return ContentService.createTextOutput();
 }
 
 /**
