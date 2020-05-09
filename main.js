@@ -54,7 +54,7 @@ function doPost(e) {
  * タスクを追加
  */
 function addTask(values) {
-  var task = new Task(values);
+  var task = generateTaskByModalInputs(values);
   // slackに送信
   task.postTask();
   // スプレッドシートに登録

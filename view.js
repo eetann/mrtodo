@@ -153,15 +153,6 @@ function generateView4Home() {
         "elements": [
           {
             "type": "checkboxes",
-            "initial_options": [
-              {
-                "text": {
-                  "type": "mrkdwn",
-                  "text": "~*Get into the garden :house_with_garden:*~"
-                },
-                "value": "option 1"
-              }
-            ],
             "options": [
               {
                 "text": {
@@ -169,34 +160,6 @@ function generateView4Home() {
                   "text": "~*Get into the garden :house_with_garden:*~"
                 },
                 "value": "option 1"
-              },
-              {
-                "text": {
-                  "type": "mrkdwn",
-                  "text": "*Get the groundskeeper wet :sweat_drops:*"
-                },
-                "value": "option 2"
-              },
-              {
-                "text": {
-                  "type": "mrkdwn",
-                  "text": "*Steal the groundskeeper's keys :old_key:*"
-                },
-                "value": "option 3"
-              },
-              {
-                "text": {
-                  "type": "mrkdwn",
-                  "text": "*Make the groundskeeper wear his sun hat :male-farmer:*"
-                },
-                "value": "option 4"
-              },
-              {
-                "text": {
-                  "type": "mrkdwn",
-                  "text": "*Rake in the lake :	<<<<<<<<ocean:*"
-                },
-                "value": "option 5"
               },
               {
                 "text": {
@@ -252,22 +215,6 @@ function generateView4Home() {
             {
               "text": {
                 "type": "plain_text",
-                "text": "Option 2",
-                "emoji": true
-              },
-              "value": "value-1"
-            },
-            {
-              "text": {
-                "type": "plain_text",
-                "text": "Option 3",
-                "emoji": true
-              },
-              "value": "value-2"
-            },
-            {
-              "text": {
-                "type": "plain_text",
                 "text": "Option 4",
                 "emoji": true
               },
@@ -289,6 +236,7 @@ function generateView4Home() {
       }
     ]
   }
+  Array.prototype.push.apply(view.blocks, generateTaskListBySheet());
   return view;
 }
 
@@ -299,3 +247,87 @@ function publishView4HomeInit(user_id) {
   var view = generateView4Home();
   publishView(user_id, view);
 }
+
+/**
+ * タスクを表示するためのブロックを返す
+ */
+function blocks4ShowTask(name, remind, start, end) {
+  var blocks = [
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": '>*' + name + '*'
+      },
+      "accessory": {
+        "type": "button",
+        "text": {
+          "type": "plain_text",
+          "text": "完了",
+          "emoji": true
+        },
+        "style": "primary",
+        "value": "click_me_123"
+      }
+    },
+    {
+      "type": "section",
+      "fields": [
+      ]
+    },
+    {
+      "type": "actions",
+      "elements": [
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "emoji": true,
+            "text": "削除"
+          },
+          "style": "danger",
+          "value": "click_me_123"
+        },
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "emoji": true,
+            "text": "編集"
+          },
+          "style": "primary",
+          "value": "click_me_123"
+        }
+      ]
+    }
+  ]
+
+  if (start != '') {
+    // NOTE: メッセージにpushするときはリストに注意
+    blocks[1].fields.push({
+      "type": "mrkdwn",
+      "text": "*開始日*:\n" + start
+    });
+  }
+  if (end != '') {
+    // NOTE: メッセージにpushするときはリストに注意
+    blocks[1].fields.push({
+      "type": "mrkdwn",
+      "text": "*終了期限*:\n" + end
+    });
+  }
+  if (remind != '') {
+    // NOTE: メッセージにpushするときはリストに注意
+    blocks[1].fields.push({
+      "type": "mrkdwn",
+      "text": "*リマインド*:\n" + getyyyyMMddDOWHHmm(remind)
+    });
+  } else {
+    blocks[1].fields.push({
+      "type": "plain_text",
+      "text": "リマインドなし"
+    });
+  }
+  return blocks;
+}
+
