@@ -7,7 +7,7 @@ function doPost(e) {
   // NOTE: callback_id や trigger_id が e の中のどこに含まれているか注意
   // NOTE: textには文字数の制限がある msgPost(JSON.stringify(payload.view));
   try {
-    if (e.parameter.type == 'interactoin') {
+    if (e.parameter.type == 'interaction') {
       // Interactivity & Shortcuts
       var payload = JSON.parse(e.parameter.payload);
       if (payload.type == 'view_submission') {
