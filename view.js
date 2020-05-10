@@ -134,109 +134,84 @@ function generateView4Home() {
             "type": "button",
             "text": {
               "type": "plain_text",
-              "text": "Help",
+              "text": "help",
               "emoji": true
             },
             "value": "help"
           }
         ]
-      },
-      {
-        "type": "section",
-        "text": {
-          "type": "mrkdwn",
-          "text": "*Today*"
-        }
-      },
-      {
-        "type": "actions",
-        "elements": [
-          {
-            "type": "checkboxes",
-            "options": [
-              {
-                "text": {
-                  "type": "mrkdwn",
-                  "text": "~*Get into the garden :house_with_garden:*~"
-                },
-                "value": "option 1"
-              },
-              {
-                "text": {
-                  "type": "mrkdwn",
-                  "text": "*Have a picnic :knife_fork_plate:*"
-                },
-                "value": "option 6",
-                "description": {
-                  "type": "mrkdwn",
-                  "text": "リマインド時間 x日～x日x時"
-                }
-              }
-            ]
-          },
-          {
-            "type": "button",
-            "text": {
-              "type": "plain_text",
-              "text": "Edit",
-              "emoji": true
-            },
-            "style": "primary"
-          }
-        ]
-      },
-      {
-        "type": "divider"
-      },
-      {
-        "type": "section",
-        "text": {
-          "type": "mrkdwn",
-          "text": "タスク一覧"
-        }
-      },
-      {
-        "type": "section",
-        "text": {
-          "type": "mrkdwn",
-          "text": "1 ~ 10 / 200 を表示"
-        },
-        "accessory": {
-          "type": "overflow",
-          "options": [
-            {
-              "text": {
-                "type": "plain_text",
-                "text": "Option 1",
-                "emoji": true
-              },
-              "value": "value-0"
-            },
-            {
-              "text": {
-                "type": "plain_text",
-                "text": "Option 4",
-                "emoji": true
-              },
-              "value": "value-3"
-            }
-          ]
-        }
-      },
-      {
-        "type": "divider"
-      },
-      {
-        "type": "section",
-        "text": {
-          "type": "plain_text",
-          "text": "ここにタスクの表示",
-          "emoji": true
-        }
       }
     ]
   }
-  Array.prototype.push.apply(view.blocks, generateTaskListBySheet());
+  var result = generateTaskListsBySheet();
+  if (result.options.length > 0) {
+    view.blocks.push({
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*Today*"
+      }
+    });
+    view.blocks.push({
+      "type": "actions",
+      "elements": [
+        {
+          "type": "checkboxes",
+          "options": result.options
+        },
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "Edit",
+            "emoji": true
+          },
+          "style": "primary"
+        }
+      ]
+    });
+  }
+  if (result.tasks.length > 0) {
+    view.blocks.push({
+      "type": "divider"
+    });
+    view.blocks.push({
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "タスク一覧"
+      }
+    });
+    view.blocks.push({
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "1 ~ 10 / 200 を表示"
+      },
+      "accessory": {
+        "type": "overflow",
+        "options": [
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "Option 1",
+              "emoji": true
+            },
+            "value": "value-0"
+          },
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "Option 4",
+              "emoji": true
+            },
+            "value": "value-3"
+          }
+        ]
+      }
+    });
+    Array.prototype.push.apply(view.blocks, result.tasks);
+  }
   return view;
 }
 

@@ -71,16 +71,33 @@ class Task {
 
 /**
  * スプレッドシートからタスク詳細一覧を生成
+ * @param {dict} result 優先リストとタスク詳細一覧
  */
-function generateTaskListBySheet() {
+function generateTaskListsBySheet() {
   var sheet = getSheetByName('tasks');
   var LastRow = sheet.getLastRow();
   var tasksArray2 = getSheetValue(sheet, 'A2:H' + LastRow);
-  var blocks = [];
+  var result = {'options': [], 'tasks': []};
   tasksArray2.map(function ([
-    now, name, state, scheduled_message_id, remind, repeat, start, end]) {
-    blocks.push({"type": "divider"});
-    Array.prototype.push.apply(blocks, blocks4ShowTask(name, remind, start, end));
+    now, name, state, scheduled_message_id, remind, order, start, end]) {
+    if (order > 0) {
+      var text;
+      if (state) {
+        text = '~' + name + '~';
+      } else {
+        text = name;
+      }
+      result.options.push(
+        {
+          "text": {
+            "type": "mrkdwn",
+            "text": text
+          },
+          "value": 'done:' + now
+        });
+    }
+    result.tasks.push({"type": "divider"});
+    Array.prototype.push.apply(result.tasks, blocks4ShowTask(name, remind, start, end));
   });
-  return blocks;
+  return result;
 }
