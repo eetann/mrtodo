@@ -7,22 +7,35 @@ function doPost(e) {
   // NOTE: callback_id や trigger_id が e の中のどこに含まれているか注意
   // NOTE: textには文字数の制限がある msgPost(JSON.stringify(payload.view));
   try {
-    var payload = JSON.parse(e.parameter.payload);
-    if (payload.type == 'view_submission') {
-      var values = payload.view.state.values;
-      if (payload.view.callback_id == 'add_task_submit') {
-        addTask(values);
+    if (e.parameter.type == 'interaction') {
+      // Interactivity & Shortcuts
+      var payload = JSON.parse(e.parameter.payload);
+      if (payload.type == 'view_submission') {
+        var values = payload.view.state.values;
+        if (payload.view.callback_id == 'add_task_submit') {
+          addTask(values);
+        }
+      } else if (payload.type == 'shortcut') {
+        if (payload.callback_id == 'add_task_call') {
+          openView4AddTaskInit(payload.trigger_id);
+        }
+      } else if (payload.type == 'block_actions') {
+        if (payload.actions[0].action_id == 'add_remind') {
+          updateView4AddTaskRemind(payload.container.view_id);
+        } else if (payload.actions[0].action_id == 'delete_remind') {
+          // TODO: ここから view を再利用
+          updateView4DeleteTaskRemind(payload.container.view_id);
+        }
       }
-    } else if (payload.type == 'shortcut') {
-      if (payload.callback_id == 'add_task_call') {
-        openView4AddTaskInit(payload.trigger_id);
-      }
-    } else if (payload.type == 'block_actions') {
-      if (payload.actions[0].action_id == 'add_remind') {
-        updateView4AddTaskRemind(payload.container.view_id);
-      } else if (payload.actions[0].action_id == 'delete_remind') {
-        // TODO: ここから view を再利用
-        updateView4DeleteTaskRemind(payload.container.view_id);
+    } else if (e.parameter.type == 'event') {
+      // Event Subscriptions
+      var contents = JSON.parse(e.postData.contents);
+      if (contents.type == "url_verification") {
+        return ContentService.createTextOutput(contents.challenge);
+      } else if (contents.type == 'event_callback') {
+        if (contents.event.type == 'app_home_opened') {
+          publishView4HomeInit(contents.event.user);
+        }
       }
     }
   } catch (e) {
@@ -41,7 +54,7 @@ function doPost(e) {
  * タスクを追加
  */
 function addTask(values) {
-  var task = new Task(values);
+  var task = generateTaskByModalInputs(values);
   // slackに送信
   task.postTask();
   // スプレッドシートに登録
