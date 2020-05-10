@@ -111,6 +111,113 @@ function updateView4DeleteTaskRemind(view_id) {
 }
 
 /**
+ * スプレッドシートからタスク詳細一覧を生成
+ * @param {dict} blocks 優先リストとタスク詳細一覧
+ */
+function generateTaskListsBySheet() {
+  var sheet = getSheetByName('tasks');
+  var LastRow = sheet.getLastRow();
+  var tasksArray2 = getSheetValue(sheet, 'A2:H' + LastRow);
+  var options = [];
+  var tasks = [];
+  tasksArray2.map(function ([
+    now, name, state, scheduled_message_id, remind, order, start, end]) {
+    if (order > 0) {
+      var text;
+      if (state) {
+        text = '~' + name + '~';
+      } else {
+        text = name;
+      }
+      options.push([order,
+        {
+          "text": {
+            "type": "mrkdwn",
+            "text": text
+          },
+          "value": 'done:' + now
+        }]);
+    }
+    tasks.push({"type": "divider"});
+    Array.prototype.push.apply(tasks, blocks4ShowTask(name, remind, start, end));
+  });
+  var blocks = [];
+  if (options.length > 0) {
+    blocks.push({
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*Today*"
+      }
+    });
+    // 優先度を昇順で並び替え
+    options.sort(function (a, b) {
+      return a[0] - b[0];
+    });
+    blocks.push({
+      "type": "actions",
+      "elements": [
+        {
+          "type": "checkboxes",
+          "options": options.map(function (t) {return t[1];})
+        },
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "Edit",
+            "emoji": true
+          },
+          "style": "primary"
+        }
+      ]
+    });
+  }
+  if (tasks.length > 0) {
+    blocks.push({
+      "type": "divider"
+    });
+    blocks.push({
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "タスク一覧"
+      }
+    });
+    blocks.push({
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "1 ~ 10 / 200 を表示"
+      },
+      "accessory": {
+        "type": "overflow",
+        "options": [
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "Option 1",
+              "emoji": true
+            },
+            "value": "value-0"
+          },
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "Option 4",
+              "emoji": true
+            },
+            "value": "value-3"
+          }
+        ]
+      }
+    });
+    Array.prototype.push.apply(blocks, tasks);
+  }
+  return blocks;
+}
+
+/**
  * Homeビュー
  */
 function generateView4Home() {
@@ -143,75 +250,8 @@ function generateView4Home() {
       }
     ]
   }
-  var result = generateTaskListsBySheet();
-  if (result.options.length > 0) {
-    view.blocks.push({
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": "*Today*"
-      }
-    });
-    view.blocks.push({
-      "type": "actions",
-      "elements": [
-        {
-          "type": "checkboxes",
-          "options": result.options
-        },
-        {
-          "type": "button",
-          "text": {
-            "type": "plain_text",
-            "text": "Edit",
-            "emoji": true
-          },
-          "style": "primary"
-        }
-      ]
-    });
-  }
-  if (result.tasks.length > 0) {
-    view.blocks.push({
-      "type": "divider"
-    });
-    view.blocks.push({
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": "タスク一覧"
-      }
-    });
-    view.blocks.push({
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": "1 ~ 10 / 200 を表示"
-      },
-      "accessory": {
-        "type": "overflow",
-        "options": [
-          {
-            "text": {
-              "type": "plain_text",
-              "text": "Option 1",
-              "emoji": true
-            },
-            "value": "value-0"
-          },
-          {
-            "text": {
-              "type": "plain_text",
-              "text": "Option 4",
-              "emoji": true
-            },
-            "value": "value-3"
-          }
-        ]
-      }
-    });
-    Array.prototype.push.apply(view.blocks, result.tasks);
-  }
+  var blocks = generateTaskListsBySheet();
+  Array.prototype.push.apply(view.blocks, blocks);
   return view;
 }
 
