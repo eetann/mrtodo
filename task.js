@@ -68,3 +68,25 @@ class Task {
     // TODO: 次の通知(開始日によっては無し)
   }
 }
+
+/**
+ * タスクを完了させる
+ * @param {str} now タスクのid
+ */
+function doneTask(now) {
+  var sheet = getSheetByName('tasks');
+  var tasks = getSheetValue(sheet, 'A2:H' + sheet.getLastRow());
+  // インデックスは0から、行番号は2からなので
+  var row = null;
+  for (var i = 0; i < tasks.length; i++) {
+    if (tasks[i][0] == now) {
+      row = i + 2;
+    }
+  }
+  if (row) {
+    sheet.getRange(row, 3).setValue(true);
+    if (tasks[row - 2] != '') {
+      // TODO: リマインド削除
+    }
+  }
+}
