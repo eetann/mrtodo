@@ -119,6 +119,7 @@ function generateTaskListsBySheet() {
   var LastRow = sheet.getLastRow();
   var tasksArray2 = getSheetValue(sheet, 'A2:H' + LastRow);
   var options = [];
+  var initial_options = [];
   var tasks = [];
   tasksArray2.map(function ([
     now, name, state, scheduled_message_id, remind, order, start, end]) {
@@ -126,9 +127,15 @@ function generateTaskListsBySheet() {
       var text;
       if (state) {
         text = '~' + name + '~';
+        initial_options.push({
+          "text": {
+            "type": "mrkdwn",
+            "text": text
+          },
+          "value": 'done ' + now
+        });
       } else {
         text = name;
-        // TODO: initial_optionに追加
       }
       options.push([order,
         {
@@ -155,7 +162,7 @@ function generateTaskListsBySheet() {
     options.sort(function (a, b) {
       return a[0] - b[0];
     });
-    blocks.push({
+    var checkboxes = {
       "type": "actions",
       "elements": [
         {
@@ -172,7 +179,11 @@ function generateTaskListsBySheet() {
           "style": "primary"
         }
       ]
-    });
+    };
+    if (initial_options.length > 0) {
+      checkboxes.elements[0]["initial_options"] = initial_options;
+    }
+    blocks.push(checkboxes);
   }
   if (tasks.length > 0) {
     blocks.push({
