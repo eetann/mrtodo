@@ -128,6 +128,7 @@ function generateTaskListsBySheet() {
         text = '~' + name + '~';
       } else {
         text = name;
+        // TODO: initial_optionに追加
       }
       options.push([order,
         {
@@ -135,11 +136,11 @@ function generateTaskListsBySheet() {
             "type": "mrkdwn",
             "text": text
           },
-          "value": 'done:' + now
+          "value": 'done ' + now
         }]);
     }
     tasks.push({"type": "divider"});
-    Array.prototype.push.apply(tasks, blocks4ShowTask(name, remind, start, end));
+    Array.prototype.push.apply(tasks, blocks4ShowTask(now, name, remind, start, end));
   });
   var blocks = [];
   if (options.length > 0) {
@@ -266,7 +267,8 @@ function publishView4HomeInit(user_id) {
 /**
  * タスクを表示するためのブロックを返す
  */
-function blocks4ShowTask(name, remind, start, end) {
+function blocks4ShowTask(now, name, remind, start, end) {
+  // TODO: ここの時点でボタンにvalueを設定
   var blocks = [
     {
       "type": "section",
@@ -276,13 +278,14 @@ function blocks4ShowTask(name, remind, start, end) {
       },
       "accessory": {
         "type": "button",
+        "action_id": "done " + now,
         "text": {
           "type": "plain_text",
           "text": "完了",
           "emoji": true
         },
         "style": "primary",
-        "value": "click_me_123"
+        "value": "done"
       }
     },
     {

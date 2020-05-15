@@ -36,7 +36,7 @@ class Task {
   /* タスク内容をslackへ投稿 */
   postTask() {
     postSlack('task '
-      + this.name, blocks4ShowTask(this.name, this.remind, this.start, this.end));
+      + this.name, blocks4ShowTask(this.now, this.name, this.remind, this.start, this.end));
   }
 
   /* slackに自作リマインダーを送信予約 */
