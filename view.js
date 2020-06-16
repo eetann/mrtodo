@@ -167,6 +167,7 @@ function generateTaskListsBySheet() {
       "elements": [
         {
           "type": "checkboxes",
+          "action_id": "done checkboxes",
           "options": options.map(function (t) {return t[1];})
         },
         {

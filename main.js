@@ -29,7 +29,16 @@ function doPost(e) {
         } else {
           var actions = action_id.trim().split(' ');
           if (actions[0] == 'done') {
-            doneTask(actions[1]);
+            // checkboxesなら
+            var now = null;
+            if (actions[1] == 'checkboxes') {
+              // now = ;
+              msgPost(JSON.stringify(payload.actions));
+            } else {
+              now = actions[1];
+              doneTask(now);
+            }
+            // doneTask(now);
             publishView4HomeInit(payload.user.id);
           }
         }
@@ -51,6 +60,7 @@ function doPost(e) {
     };
     // postSlack(' ', [{"type": "section","text": {"type": "mrkdwn",
     //         "text": JSON.stringify(payload)}},]);
+    // NOTE: JSONを返す
     return ContentService.createTextOutput(JSON.stringify(json_data))
       .setMimeType(ContentService.MimeType.JSON);
   }
