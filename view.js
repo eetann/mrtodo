@@ -119,6 +119,7 @@ function generateTaskListsBySheet() {
   var LastRow = sheet.getLastRow();
   var tasksArray2 = getSheetValue(sheet, 'A2:H' + LastRow);
   var options = [];
+  var initial_options = [];
   var tasks = [];
   tasksArray2.map(function ([
     now, name, state, scheduled_message_id, remind, order, start, end]) {
@@ -126,6 +127,13 @@ function generateTaskListsBySheet() {
       var text;
       if (state) {
         text = '~' + name + '~';
+        initial_options.push({
+          "text": {
+            "type": "mrkdwn",
+            "text": text
+          },
+          "value": 'done ' + now
+        });
       } else {
         text = name;
       }
@@ -135,11 +143,11 @@ function generateTaskListsBySheet() {
             "type": "mrkdwn",
             "text": text
           },
-          "value": 'done:' + now
+          "value": 'done ' + now
         }]);
     }
     tasks.push({"type": "divider"});
-    Array.prototype.push.apply(tasks, blocks4ShowTask(name, remind, start, end));
+    Array.prototype.push.apply(tasks, blocks4ShowTask(now, name, remind, start, end));
   });
   var blocks = [];
   if (options.length > 0) {
@@ -154,11 +162,12 @@ function generateTaskListsBySheet() {
     options.sort(function (a, b) {
       return a[0] - b[0];
     });
-    blocks.push({
+    var checkboxes = {
       "type": "actions",
       "elements": [
         {
           "type": "checkboxes",
+          "action_id": "done checkboxes",
           "options": options.map(function (t) {return t[1];})
         },
         {
@@ -171,7 +180,11 @@ function generateTaskListsBySheet() {
           "style": "primary"
         }
       ]
-    });
+    };
+    if (initial_options.length > 0) {
+      checkboxes.elements[0]["initial_options"] = initial_options;
+    }
+    blocks.push(checkboxes);
   }
   if (tasks.length > 0) {
     blocks.push({
@@ -266,7 +279,8 @@ function publishView4HomeInit(user_id) {
 /**
  * タスクを表示するためのブロックを返す
  */
-function blocks4ShowTask(name, remind, start, end) {
+function blocks4ShowTask(now, name, remind, start, end) {
+  // TODO: ここの時点でボタンにvalueを設定
   var blocks = [
     {
       "type": "section",
@@ -276,13 +290,14 @@ function blocks4ShowTask(name, remind, start, end) {
       },
       "accessory": {
         "type": "button",
+        "action_id": "done " + now,
         "text": {
           "type": "plain_text",
           "text": "完了",
           "emoji": true
         },
         "style": "primary",
-        "value": "click_me_123"
+        "value": "done"
       }
     },
     {

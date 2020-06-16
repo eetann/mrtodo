@@ -20,11 +20,27 @@ function doPost(e) {
           openView4AddTaskInit(payload.trigger_id);
         }
       } else if (payload.type == 'block_actions') {
-        if (payload.actions[0].action_id == 'add_remind') {
+        var action_id = payload.actions[0].action_id;
+        if (action_id == 'add_remind') {
           updateView4AddTaskRemind(payload.container.view_id);
-        } else if (payload.actions[0].action_id == 'delete_remind') {
+        } else if (action_id == 'delete_remind') {
           // TODO: ここから view を再利用
           updateView4DeleteTaskRemind(payload.container.view_id);
+        } else {
+          var actions = action_id.trim().split(' ');
+          if (actions[0] == 'done') {
+            // checkboxesなら
+            var now = null;
+            if (actions[1] == 'checkboxes') {
+              // now = ;
+              msgPost(JSON.stringify(payload.actions));
+            } else {
+              now = actions[1];
+              doneTask(now);
+            }
+            // doneTask(now);
+            publishView4HomeInit(payload.user.id);
+          }
         }
       }
     } else if (e.parameter.type == 'event') {
@@ -44,6 +60,7 @@ function doPost(e) {
     };
     // postSlack(' ', [{"type": "section","text": {"type": "mrkdwn",
     //         "text": JSON.stringify(payload)}},]);
+    // NOTE: JSONを返す
     return ContentService.createTextOutput(JSON.stringify(json_data))
       .setMimeType(ContentService.MimeType.JSON);
   }
